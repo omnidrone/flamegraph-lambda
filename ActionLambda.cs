@@ -5,10 +5,10 @@ using System.Net.Http;
 
 namespace FlamegraphLambda
 {
-    public class ChainedFlamegraph
+    public class ActionLambda
     {
         
-        public async Task Flamegraph(ChainedRequest request, ILambdaContext context)
+        public async Task Action(ActionRequest request, ILambdaContext context)
         {
             string path = System.Environment.GetEnvironmentVariable("path");
             string s3url = System.Environment.GetEnvironmentVariable("s3url");
@@ -22,17 +22,17 @@ namespace FlamegraphLambda
             }
             request.Index++;
             if (request.URLs.Count > request.Index)
-                await ChainedRequestHelper.Trigger(request.URLs, request.Index, context);
+                await FunctionHelper.Trigger(request.URLs, request.Index, context.InvokedFunctionArn);
         }
 
     }
 
-    public class ChainedRequest
+    public class ActionRequest
     {
         public List<string> URLs { get; set; }
         public int Index { get; set; }
 
-        public ChainedRequest(List<string> urls, int index)
+        public ActionRequest(List<string> urls, int index)
         {
             URLs = urls;
             Index = index;

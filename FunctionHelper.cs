@@ -9,9 +9,9 @@ using Newtonsoft.Json;
 
 namespace FlamegraphLambda
 {
-    public class ChainedRequestHelper
+    public class FunctionHelper
     {
-        public static async Task Trigger(List<string> dnsNames, int index, ILambdaContext context)
+        public static async Task Trigger(List<string> dnsNames, int index, string function)
         {
             IAmazonLambda lambda = new AmazonLambdaClient(new AmazonLambdaConfig
             {
@@ -20,9 +20,9 @@ namespace FlamegraphLambda
             });
             await lambda.InvokeAsync(new InvokeRequest
             {
-                FunctionName = context.FunctionName,
+                FunctionName = function,
                 InvocationType = InvocationType.Event,
-                Payload = JsonConvert.SerializeObject(new ChainedRequest(dnsNames, index))
+                Payload = JsonConvert.SerializeObject(new ActionRequest(dnsNames, index))
             });
         }
     }
